@@ -38,15 +38,15 @@ int main()
 
   // El primer hilo calcula el valor promedio
   pthread_attr_init(&attr[0]);
-  pthread_create(&threadID[0], &attr[0], return_Avg, &threadID[0]);
+  pthread_create(&threadID[0], &attr[0], return_Avg, NULL);
     
   // El segundo hilo busca el valor minimo
   pthread_attr_init(&attr[1]);
-  pthread_create(&threadID[1], &attr[1], return_Min, &threadID[1]);
+  pthread_create(&threadID[1], &attr[1], return_Min, NULL);
 
   // El tercer hijo busca el valor maximo
   pthread_attr_init(&attr[2]);
-  pthread_create(&threadID[2], &attr[1], return_Max, &threadID[2]);
+  pthread_create(&threadID[2], &attr[2], return_Max, NULL);
 
   // El proceso padre espera a todos los hilos
   for (int i = 0 ; i < 3 ; i++ ){
