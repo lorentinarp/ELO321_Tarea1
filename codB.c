@@ -1,3 +1,12 @@
+/*
+*@file      : "codB.c"
+*@author    : Loreto Romero Ponce
+              Camilo Donoso Collao
+*@date      : 06/11/202
+*@brief     : Código para tarea 01 de ELO321, semestre 2020 -2
+              Corresponde a la parte B, las preguntas 0,1 y 2.
+*/
+
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -55,32 +64,36 @@ int main()
 
 void* return_Avg(void *arg){
   int tmp = 0;
+  // Se calcula la suma de todos los elementos del arreglo
   for (int i = 0 ; i < 50 ; i++){
     tmp = tmp + numArray[i];
   }
-  pthread_mutex_lock(&lock); 
+  // Se utilizó mutex cuando los hilos modifican las variables globales
+  pthread_mutex_lock(&lock); // Entry section
   // Critical section
-  avg_value = tmp/50.0;
-  pthread_mutex_unlock(&lock); 
+  avg_value = tmp/50.0; // Se calcula el promedio
+  pthread_mutex_unlock(&lock); // Exit section
   // Remainder section
   printf("Thread ID: %lu calculó promedio\n",pthread_self());
 }
 
 void* return_Min(void *arg){
   int tmp = numArray[0];
+  // Ciclo for para buscar el valor mínimo del arreglo
   for (int i = 0 ; i < 50 ; i++){
     if (tmp > numArray[i]) tmp = numArray[i];
   }
-  pthread_mutex_lock(&lock); 
+  pthread_mutex_lock(&lock); // Entry section
   // Critical section
   min_value = tmp;
-  pthread_mutex_unlock(&lock); 
+  pthread_mutex_unlock(&lock); // Exit section
   // Remainder section
   printf("Thread ID: %lu calculó valor mínimo\n",pthread_self());
 }
 
 void* return_Max(void *arg){
   int tmp = numArray[0];
+  // Ciclo for para buscar el valor máximo del arreglo
   for (int i = 0 ; i < 50 ; i++){
     if (tmp < numArray[i]) tmp = numArray[i];
   }
