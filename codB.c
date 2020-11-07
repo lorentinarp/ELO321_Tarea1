@@ -28,7 +28,8 @@ pthread_mutex_t lock;
 int main()
 {
   // Se inicia el arreglo con 50 numeros aleatorios
-  for (int i = 0 ; i < 50 ; i++ ){
+  int i;
+  for (i = 0 ; i < 50 ; i++ ){
     numArray[i] = rand() % 100;
   }
     
@@ -49,7 +50,7 @@ int main()
   pthread_create(&threadID[2], &attr[2], return_Max, NULL);
 
   // El proceso padre espera a todos los hilos
-  for (int i = 0 ; i < 3 ; i++ ){
+  for (i = 0 ; i < 3 ; i++ ){
     pthread_join(threadID[i], NULL);
   }
 
@@ -65,7 +66,8 @@ int main()
 void* return_Avg(void *arg){
   int tmp = 0;
   // Se calcula la suma de todos los elementos del arreglo
-  for (int i = 0 ; i < 50 ; i++){
+  int i;
+  for (i = 0 ; i < 50 ; i++){
     tmp = tmp + numArray[i];
   }
   // Se utilizó mutex cuando los hilos modifican las variables globales
@@ -80,7 +82,8 @@ void* return_Avg(void *arg){
 void* return_Min(void *arg){
   int tmp = numArray[0];
   // Ciclo for para buscar el valor mínimo del arreglo
-  for (int i = 0 ; i < 50 ; i++){
+  int i;
+  for (i = 0 ; i < 50 ; i++){
     if (tmp > numArray[i]) tmp = numArray[i];
   }
   pthread_mutex_lock(&lock); // Entry section
@@ -94,7 +97,8 @@ void* return_Min(void *arg){
 void* return_Max(void *arg){
   int tmp = numArray[0];
   // Ciclo for para buscar el valor máximo del arreglo
-  for (int i = 0 ; i < 50 ; i++){
+  int i;
+  for (i = 0 ; i < 50 ; i++){
     if (tmp < numArray[i]) tmp = numArray[i];
   }
   pthread_mutex_lock(&lock);  // Entry section
