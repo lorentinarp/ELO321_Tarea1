@@ -43,8 +43,8 @@ int main(int argc; char* argv[]) {
   long days = T1.tv_sec / (24 * 60 * 60);
   if (days > 0) {
     days = days - 12;
-    int years = 1970 + days/365;
-    int months = days%365;
+    int years = 1970 + (int)(days/365);
+    int months = (int)(days%365);
     if ((months) <= 31){
       days = months;
       months = 1;
@@ -53,28 +53,48 @@ int main(int argc; char* argv[]) {
       days = months - 31;
       months = 2;
     }
-    else if ((months - 60) <= 31)
+    else if ((months - 60) <= 31) {
+      days = months - 60;
       months = 3;
-    else if ((months - 91) <= 30)
+    }
+    else if ((months - 91) <= 30) {
+      days = months - 91;    
       months = 4;
-    else if ((months - 121) <= 31)
+    }
+    else if ((months - 121) <= 31){
+      days = months - 121;
       months = 5;
-    else if ((months - 162) <= 30)
+    }
+    else if ((months - 162) <= 30){
+      days = months - 162;
       months = 6;
-    else if ((months - 192) <= 31)
+    }
+    else if ((months - 192) <= 31) {
+      days = months - 192;  
       months = 7;
-    else if ((months - 223) <= 31)
+    }
+    else if ((months - 223) <= 31){
+      days = months - 223;
       months = 8;
-    else if ((months - 254) <= 30)
+    }
+    else if ((months - 254) <= 30) {
+      days = months - 254;
       months = 9;
-    else if ((months - 284) <= 31)
+    }
+    else if ((months - 284) <= 31){
+      days = months - 284;
       months = 10;
-    else if ((months - 315) <= 30)
+    }
+    else if ((months - 315) <= 30){
+      days = months - 315;      
       months = 11;
-    else 
+    }
+    else {
+      days = months - 345;
       month = 12;
+    }
 
-    printf("Fecha: %d %d %d", days, months, years);
+    printf("Fecha: %d/%d/%d", days, months, years);
   }
 
 
