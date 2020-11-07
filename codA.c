@@ -117,6 +117,7 @@ int main(int argc, char* argv[]) {
 
   /* Proceso padre debe esperar al hijo */
   else {
+    sleep(10);
     wait(NULL);
     printf("Proceso hijo completado.\n");
   }
