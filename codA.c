@@ -12,7 +12,7 @@
 #include <time.h>
 #include <stdint.h>
 
-int main(int argc; char* argv[]) {
+int main(int argc, char* argv[]) {
   
   /* Controlar el correcto paso de argumentos por linea de comandos */
   if (argc != 2) {
@@ -33,69 +33,78 @@ int main(int argc; char* argv[]) {
 
   /* Llamada a sistema pidiendo hora y fecha */
   struct timespec T1;
-  int hora = clock_gettime(CLOCK_REALTIME, &T1);
-  if (hora == -1) {
+  if (clock_gettime(CLOCK_REALTIME, &T1) == -1) {
     printf("Error al retornar la hora.\n");
     exit(EXIT_FAILURE);
   }
   
-  /* Imprimir fecha */ 
-  long days = T1.tv_sec / (24 * 60 * 60);
+  /* Imprimir fecha y hora */ 
+  long days = T1.tv_sec / 86400;
   if (days > 0) {
-    days = days - 12;
+    days = days - 11; // años bisiestos
+    int horas = (int)(T1.tv_sec % 86400) / 3600 - 3;
+    if (horas < 0) {
+      horas = horas + 24;
+      days = days - 1;
+    }
     int years = 1970 + (int)(days/365);
-    int months = (int)(days%365);
-    if ((months) <= 31){
-      days = months;
+    int months;
+    days = days % 365;
+    if (days <= 31){
       months = 1;
     }
-    else if ((months - 31) <= 29){
-      days = months - 31;
+    else if ((days - 31) <= 29){
+      days = days - 31;
       months = 2;
     }
-    else if ((months - 60) <= 31) {
-      days = months - 60;
+    else if ((days - 60) <= 31) {
+      days = days - 60;
       months = 3;
     }
-    else if ((months - 91) <= 30) {
-      days = months - 91;    
+    else if ((days - 91) <= 30) {
+      days = days - 91;
       months = 4;
     }
-    else if ((months - 121) <= 31){
-      days = months - 121;
+    else if ((days - 121) <= 31){
+      days = days - 121;
       months = 5;
     }
-    else if ((months - 162) <= 30){
-      days = months - 162;
+    else if ((days - 152) <= 30){
+      days = days - 152;
       months = 6;
     }
-    else if ((months - 192) <= 31) {
-      days = months - 192;  
+    else if ((days - 182) <= 31) {
+      days = days - 182;
       months = 7;
     }
-    else if ((months - 223) <= 31){
-      days = months - 223;
+    else if ((days - 213) <= 31){
+      days = days - 213;
       months = 8;
     }
-    else if ((months - 254) <= 30) {
-      days = months - 254;
+    else if ((days - 244) <= 30) {
+      days = days - 244;
       months = 9;
     }
-    else if ((months - 284) <= 31){
-      days = months - 284;
+    else if ((days - 274) <= 31){
+      days = days - 274;
       months = 10;
     }
-    else if ((months - 315) <= 30){
-      days = months - 315;      
+    else if ((days - 305) <= 30){
+      days = days - 305;
       months = 11;
     }
     else {
-      days = months - 345;
-      month = 12;
+      days = days - 335;
+      months = 12;
     }
-
-    printf("Fecha: %d/%d/%d", days, months, years);
+    
+    printf("Fecha: %02d/%02d/%04d \n", (int)days, months, years);
+    printf("Hora: %02d:%02d:%02d \n",horas,(int)(T1.tv_sec%3600)/60,(int)T1.tv_sec%60);
+  }
+  else {
+    printf("La cantidad de segundos retornados es menor o igual a cero.\n");
   }
 
+  
 
 }
