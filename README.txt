@@ -16,9 +16,9 @@ El programa codA.c se compila de la siguiente manera:
   
 Y se ejecuta de la siguiente manera:
 
-  ./codA n
+  ./codA n & ps -l
   
-donde el argumento 'n' corresponde a un número entero positivo.  
+donde el argumento 'n' corresponde a un número entero positivo.  El ps -l sirve para ver el proceso zombie.
 
 
 ## Parte B
