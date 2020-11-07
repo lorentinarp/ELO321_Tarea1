@@ -1,11 +1,24 @@
 # ELO321_Tarea1
 
 Integrantes:
-- Loreto Romero Ponce  
+- Loreto Romero Ponce      201554001-2     loreto.romero@sansano.usm.cl
 - Camilo Donoso Collao     201521040-3     camilo.donoso@sansano.usm.cl
 
-## Parte A
 
+## Parte A
+La parte A de la tarea se desarrolló en un código, codA.c
+
+...
+
+El programa codA.c se compila de la siguiente manera:
+
+  gcc codA.c -o codA -lrt
+  
+Y se ejecuta de la siguiente manera:
+
+  ./codA n
+  
+donde el argumento 'n' corresponde a un número entero positivo.  
 
 
 ## Parte B
