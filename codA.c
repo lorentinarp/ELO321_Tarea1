@@ -17,6 +17,13 @@
 #include <sys/stat.h>       
 #include <fcntl.h>
 
+/**
+ * @brief   : recibe n y genera el siguiente numero generado de la sucesion de Collatz
+ * @param n : numero entero positivo
+ * @return  : numero siguiente a n en la sucesion de Collatz
+ */
+int sucesion_Collatz(unsigned int n);
+
 int main(int argc, char* argv[]) {
   
   /* Controlar el correcto paso de argumentos por linea de comandos */
@@ -33,13 +40,13 @@ int main(int argc, char* argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  /* Generar proceso hijo */
+  /* Generar proceso hijo para ejecutar llamada a sistema */
   pid_t pid1;
   pid1 = fork();
 
   /* Controlar que se haya ejecutado fork correctamente */
   if (pid1 < 0) {
-    printf("Error al crear proceso hijo.\n");
+    printf("Error al crear primer proceso hijo.\n");
     exit(EXIT_FAILURE);
   }
 
@@ -119,11 +126,10 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  /* Proceso padre debe esperar al hijo */
+  /* Proceso padre debe esperar al primer proceso hijo */
   else {
-    sleep(10);
     wait(NULL);
-    printf("Proceso hijo completado.\n");
+    printf("Primer proceso hijo completado.\n");
   }
 
   /* Establecer espacio de memoria compartida */
@@ -135,5 +141,49 @@ int main(int argc, char* argv[]) {
   ftruncate(shm_fd, SIZE);
   ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
+  /* Generar proceso hijo para escribir sucesion de Collatz en mem */
+  pid_t pid2;
+  pid2 = fork();
+
+  /* Controlar que se haya ejecutado fork correctamente */
+  if (pid2 < 0) {
+    printf("Error al crear segundo proceso hijo.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  /* Calcular sucesion de Collatz a partir de num de parte de proceso hijo */
+  else if (pid2==0) {
+    while (num!=1){
+      num = sucesion_Collatz((unsigned int)num);
+
+      /* Escribir en espacio de memoria compartida */
+      sprintf(ptr, "%d", num);
+      ptr += 4; 
+    }
+  }
+
+  /* Proceso padre debe esperar al segundo proceso hijo */
+  else {
+    sleep(10);
+    wait(NULL);
+    printf("Segundo proceso hijo completado.\n");
+  }
+
   return 0;
+}
+
+int sucesion_Collatz(unsigned int n) {
+
+  int sgte;
+
+  /* Verificar si n es par */
+  if (n % 2 == 0) 
+    sgte = n / 2;
+
+  /* En caso de que no sea par */
+  else {
+    sgte = 3 * n + 1;
+  }
+
+  return sgte;
 }
