@@ -3,7 +3,7 @@
 * @author : Camilo Donoso
 *           Loreto Romero
 * @date   : 06/11/2020
-* @brief  : Código para tarea 01 en ELO 321, semestre 2020-2
+* @brief  : Cï¿½digo para tarea 01 en ELO 321, semestre 2020-2
 */
 
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <stdint.h>
+#include <wait.h>
 
 int main(int argc, char* argv[]) {
   
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]) {
   int num;
   num = atoi(argv[1]);
   if (num<=0) {
-    printf("El número ingresado no es positivo.\n");
+    printf("El nï¿½mero ingresado no es positivo.\n");
     exit(EXIT_FAILURE);
   }
 
@@ -49,7 +50,7 @@ int main(int argc, char* argv[]) {
     /* Imprimir fecha y hora */ 
     long days = T1.tv_sec / 86400;
     if (days > 0) {
-      days = days - 11; // años bisiestos
+      days = days - 11; // aï¿½os bisiestos
       int horas = (int)(T1.tv_sec % 86400) / 3600 - 3;
       if (horas < 0) {
         horas = horas + 24;
