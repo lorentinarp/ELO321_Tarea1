@@ -8,7 +8,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
+#include <stdint.h>
 
 int main(int argc; char* argv[]) {
   
@@ -29,18 +31,51 @@ int main(int argc; char* argv[]) {
   /* Generar procesos hijos */
 
 
-  /* Llamadas a sistema pidiendo hora y fecha de ejecucion del programa */
+  /* Llamada a sistema pidiendo hora y fecha */
   struct timespec T1;
-  T1.tv_sec = ;
-  T1.tv_nsec = ;
   int hora = clock_gettime(CLOCK_REALTIME, &T1);
   if (hora == -1) {
     printf("Error al retornar la hora.\n");
     exit(EXIT_FAILURE);
   }
+  
+  /* Imprimir fecha */ 
+  long days = T1.tv_sec / (24 * 60 * 60);
+  if (days > 0) {
+    days = days - 12;
+    int years = 1970 + days/365;
+    int months = days%365;
+    if ((months) <= 31){
+      days = months;
+      months = 1;
+    }
+    else if ((months - 31) <= 29){
+      days = months - 31;
+      months = 2;
+    }
+    else if ((months - 60) <= 31)
+      months = 3;
+    else if ((months - 91) <= 30)
+      months = 4;
+    else if ((months - 121) <= 31)
+      months = 5;
+    else if ((months - 162) <= 30)
+      months = 6;
+    else if ((months - 192) <= 31)
+      months = 7;
+    else if ((months - 223) <= 31)
+      months = 8;
+    else if ((months - 254) <= 30)
+      months = 9;
+    else if ((months - 284) <= 31)
+      months = 10;
+    else if ((months - 315) <= 30)
+      months = 11;
+    else 
+      month = 12;
 
+    printf("Fecha: %d %d %d", days, months, years);
+  }
 
-  /* Imprimir hora y fecha */
-  printf("Hora: %d", hora);
 
 }
