@@ -12,6 +12,10 @@
 #include <time.h>
 #include <stdint.h>
 #include <wait.h>
+#include <sys/mman.h>
+#include <sys/shm.h>
+#include <sys/stat.h>       
+#include <fcntl.h>
 
 int main(int argc, char* argv[]) {
   
@@ -25,7 +29,7 @@ int main(int argc, char* argv[]) {
   int num;
   num = atoi(argv[1]);
   if (num<=0) {
-    printf("El n�mero ingresado no es positivo.\n");
+    printf("El numero ingresado no es positivo.\n");
     exit(EXIT_FAILURE);
   }
 
@@ -120,6 +124,15 @@ int main(int argc, char* argv[]) {
     wait(NULL);
     printf("Proceso hijo completado.\n");
   }
+
+  /* Establecer espacio de memoria compartida */
+  const int SIZE = 4096;
+  const char* name = "mem";
+  int shm_fd;
+  void* ptr;
+  shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
+  ftruncate(shm_fd, SIZE);
+  ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
   return 0;
 }
