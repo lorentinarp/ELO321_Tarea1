@@ -24,9 +24,6 @@
  */
 int sucesion_Collatz(unsigned int n);
 
-int count = 1;
-int* pcount = &count;
-
 int main(int argc, char* argv[]) {
   
   /* Controlar el correcto paso de argumentos por linea de comandos */
@@ -137,11 +134,17 @@ int main(int argc, char* argv[]) {
     /* Establecer espacio de memoria compartida */
     const int SIZE = 4096;
     const char* name = "mem";
+    const char* name2 = "count";
     int shm_fd;
+    int shm_fd2;
     void* ptr;
+    void* ptr2;
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     ftruncate(shm_fd, SIZE);
     ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    shm_fd2 = shm_open(name2, O_CREAT | O_RDWR, 0666);
+    ftruncate(shm_fd2, SIZE);
+    ptr2 = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd2, 0);
 
     /* Generar proceso hijo para escribir sucesion de Collatz en mem */
     pid_t pid2;
@@ -163,6 +166,7 @@ int main(int argc, char* argv[]) {
       }
       printf("%d\n", num);
       ptr += sizeof(int);
+      int c = 1;
 
       /* Calcular los elementos siguientes y escribirlos uno a uno en mem */
       while (num!=1){
@@ -175,8 +179,10 @@ int main(int argc, char* argv[]) {
         }
         printf("%d\n", num);
         ptr += sizeof(int); 
-        *pcount += 1;
+        c += 1;
       }
+
+      sprintf(ptr2, "%d", c);
     }
 
     /* Proceso padre debe esperar al segundo proceso hijo */
@@ -188,8 +194,13 @@ int main(int argc, char* argv[]) {
       /* Leer desde espacio de memoria compartida */
       shm_fd = shm_open(name, O_RDONLY, 0666);
       ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
+      shm_fd2 = shm_open(name2, O_RDONLY, 0666);
+      ptr2 = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd2, 0);
+      char count[2];
+      sprintf(count,"%s\n", (char*)ptr2);
+
       int i;
-      for (i=0;i<(*pcount);i++){
+      for (i=0;i<atoi(count);i++){
         printf("%s\n", (char*)ptr);
         ptr += sizeof(int);
       }
@@ -201,8 +212,7 @@ int main(int argc, char* argv[]) {
         printf("Se eliminó correctamente el espacio de memoria compartida.\n");
     }
   }
-  
-  printf("count= %d\n", *pcount);
+
   return 0;
 
 }
