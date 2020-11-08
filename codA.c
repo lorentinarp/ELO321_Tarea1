@@ -134,9 +134,7 @@ int main(int argc, char* argv[]) {
     /* Establecer espacio de memoria compartida y de contador de elementos de la sucesion */
     const int SIZE = 4096;
     const char* name = "mem";
-    const char* name2 = "count";
     int shm_fd;
-    int shm_fd2;
     void* ptr;
     void* ptr2;
 
@@ -202,6 +200,7 @@ int main(int argc, char* argv[]) {
       char count[2]; 
       sprintf(count,"%s\n", (char*)ptr);
       ptr += sizeof(int);
+
       /* Imprimir sucesion de numeros leidos */
       int i;
       for (i=0;i<atoi(count);i++){
