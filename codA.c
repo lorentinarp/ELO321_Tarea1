@@ -1,9 +1,10 @@
 /*
 * @file   : codA.c
-* @author : Camilo Donoso
-*           Loreto Romero
+* @author : Loreto Romero Ponce
+*           Camilo Donoso Collao
 * @date   : 06/11/2020
-* @brief  : Codigo para tarea 01 en ELO 321, semestre 2020-2
+* @brief  : Código para tarea 01 en ELO 321, semestre 2020-2
+*           Corresponde a la parte A.
 */
 
 #include <stdio.h>
@@ -17,6 +18,7 @@
 #include <sys/stat.h>       
 #include <fcntl.h>
 
+/* Funciones */
 /**
  * @brief   : recibe n y genera el siguiente numero generado de la sucesion de Collatz
  * @param n : numero entero positivo
