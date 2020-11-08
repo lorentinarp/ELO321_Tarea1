@@ -8,7 +8,7 @@ Integrantes:
 ## Parte A
 La parte A de la tarea se desarrolló en un código, codA.c
 
-...
+El código codA.c responde las preguntas 0, 1, 2, 3, 4, 5, y 6 de la parte A. En la primera parte, crea un proceso hijo que se encarga de hacer una llamada a sistema solicitando información del reloj para así a partir de ello imprimir la fecha y hora de la ejecución. El proceso padre espera al proceso hijo que termine, y luego crea un segundo proceso hijo, el cual realiza la escritura en memoria compartida de los elementos de la sucesión de Collatz uno a uno de un número ingresado por línea de comandos y del contador con la cantidad de elementos de la sucesión creada. El proceso padre también espera a este proceso hijo, pero por un periodo de 10 segundos (tiempo considerado para observar su estado de zombie), y luego procede a leer desde la memoria compartida la cantidad de elementos de la sucesión dada por el contador (también leído desde memoria) y los imprime por pantalla. Para terminar, el proceso padre elimina el espacio de memoria compartida y se termina el programa.
 
 El programa codA.c se compila de la siguiente manera:
 
@@ -16,9 +16,13 @@ El programa codA.c se compila de la siguiente manera:
   
 Y se ejecuta de la siguiente manera:
 
+  ./codA n
+
+donde para ver el proceso zombie, se agrega ps -l:
+
   ./codA n & ps -l
   
-donde el argumento 'n' corresponde a un número entero positivo.  El ps -l sirve para ver el proceso zombie.
+El argumento 'n' corresponde a un número entero positivo.  
 
 
 ## Parte B
