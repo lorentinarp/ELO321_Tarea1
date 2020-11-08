@@ -144,11 +144,8 @@ int main(int argc, char* argv[]) {
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     ftruncate(shm_fd, SIZE);
     ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
-
-    /* Contador */
-    shm_fd2 = shm_open(name2, O_CREAT | O_RDWR, 0666);
-    ftruncate(shm_fd2, SIZE);
-    ptr2 = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd2, 0);
+    ptr2 = ptr;
+    ptr += sizeof(int);
 
     /* Generar proceso hijo para escribir sucesion de Collatz en mem */
     pid_t pid2;
@@ -184,7 +181,7 @@ int main(int argc, char* argv[]) {
         c += 1;
       }
 
-      /* Escribir en espacio compartido de contador, controlando si hubo error */
+      /* Escribir en espacio compartido el contador, controlando si hubo error */
       if (sprintf(ptr2, "%d", c) == -1) {
         printf("Error al escribir contador en espacio de memoria compartida.\n");
         exit(EXIT_FAILURE);
@@ -201,12 +198,10 @@ int main(int argc, char* argv[]) {
       shm_fd = shm_open(name, O_RDONLY, 0666);
       ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
 
-      /* Leer el contador desde espacio de memoria compartida */
-      shm_fd2 = shm_open(name2, O_RDONLY, 0666);
-      ptr2 = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd2, 0);
-      char count[2];
-      sprintf(count,"%s\n", (char*)ptr2);
-
+      /*Se extra el contador de la memoria compartida y se guarda en count*/
+      char count[2]; 
+      sprintf(count,"%s\n", (char*)ptr);
+      ptr += sizeof(int);
       /* Imprimir sucesion de numeros leidos */
       int i;
       for (i=0;i<atoi(count);i++){
