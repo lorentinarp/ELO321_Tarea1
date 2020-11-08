@@ -186,8 +186,8 @@ int main(int argc, char* argv[]) {
 
       /* Escribir en espacio compartido de contador, controlando si hubo error */
       if (sprintf(ptr2, "%d", c) == -1) {
-          printf("Error al escribir contador en espacio de memoria compartida.\n");
-          exit(EXIT_FAILURE);
+        printf("Error al escribir contador en espacio de memoria compartida.\n");
+        exit(EXIT_FAILURE);
       }
     }
 
