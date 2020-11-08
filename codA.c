@@ -3,7 +3,7 @@
 * @author : Camilo Donoso
 *           Loreto Romero
 * @date   : 06/11/2020
-* @brief  : C�digo para tarea 01 en ELO 321, semestre 2020-2
+* @brief  : Codigo para tarea 01 en ELO 321, semestre 2020-2
 */
 
 #include <stdio.h>
@@ -23,6 +23,9 @@
  * @return  : numero siguiente a n en la sucesion de Collatz
  */
 int sucesion_Collatz(unsigned int n);
+
+int count = 1;
+int* pcount = &count;
 
 int main(int argc, char* argv[]) {
   
@@ -152,12 +155,27 @@ int main(int argc, char* argv[]) {
 
     /* Calcular sucesion de Collatz a partir de num de parte de proceso hijo */
     else if (pid2==0) {
+
+      /* Escribir en mem primer elemento, controlando si hubo error */
+      if (sprintf(ptr, "%d", num) == -1) {
+        printf("Error al escribir %d en espacio de memoria compartida.\n", num);
+        exit(EXIT_FAILURE);
+      }
+      printf("%d\n", num);
+      ptr += sizeof(int);
+
+      /* Calcular los elementos siguientes y escribirlos uno a uno en mem */
       while (num!=1){
         num = sucesion_Collatz((unsigned int)num);
 
-        /* Escribir en espacio de memoria compartida */
-        sprintf(ptr, "%d", num);
-        ptr += 4; 
+        /* Controlando si hubo error */
+        if (sprintf(ptr, "%d", num) == -1) {
+          printf("Error al escribir %d en espacio de memoria compartida.\n",num);
+          exit(EXIT_FAILURE);
+        }
+        printf("%d\n", num);
+        ptr += sizeof(int); 
+        *pcount += 1;
       }
     }
 
@@ -166,10 +184,27 @@ int main(int argc, char* argv[]) {
       sleep(10);
       wait(NULL);
       printf("Segundo proceso hijo completado.\n");
+
+      /* Leer desde espacio de memoria compartida */
+      shm_fd = shm_open(name, O_RDONLY, 0666);
+      ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
+      int i;
+      for (i=0;i<(*pcount);i++){
+        printf("%s\n", (char*)ptr);
+        ptr += sizeof(int);
+      }
+
+      /* Eliminar espacio de memoria compartida */
+      if (shm_unlink(name)==-1)
+        printf("Error al eliminar espacio de memoria compartida.\n");
+      else
+        printf("Se eliminó correctamente el espacio de memoria compartida.\n");
     }
   }
   
+  printf("count= %d\n", *pcount);
   return 0;
+
 }
 
 int sucesion_Collatz(unsigned int n) {
@@ -186,4 +221,5 @@ int sucesion_Collatz(unsigned int n) {
   }
 
   return sgte;
+
 }
