@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     /* Imprimir fecha y hora */ 
     long days = T1.tv_sec / 86400;
     if (days > 0) {
-      days = days - 11; // a�os bisiestos
+      days = days - 11; // bisiestos
       int horas = (int)(T1.tv_sec % 86400) / 3600 - 3;
       if (horas < 0) {
         horas = horas + 24;
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
     wait(NULL);
     printf("Primer proceso hijo completado.\n");
 
-    /* Establecer espacio de memoria compartida */
+    /* Establecer espacio de memoria compartida y de contador de elementos de la sucesion */
     const int SIZE = 4096;
     const char* name = "mem";
     const char* name2 = "count";
@@ -139,9 +139,13 @@ int main(int argc, char* argv[]) {
     int shm_fd2;
     void* ptr;
     void* ptr2;
+
+    /* Memoria compartida */
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
     ftruncate(shm_fd, SIZE);
     ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+
+    /* Contador */
     shm_fd2 = shm_open(name2, O_CREAT | O_RDWR, 0666);
     ftruncate(shm_fd2, SIZE);
     ptr2 = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd2, 0);
@@ -164,7 +168,6 @@ int main(int argc, char* argv[]) {
         printf("Error al escribir %d en espacio de memoria compartida.\n", num);
         exit(EXIT_FAILURE);
       }
-      printf("%d\n", num);
       ptr += sizeof(int);
       int c = 1;
 
@@ -177,12 +180,15 @@ int main(int argc, char* argv[]) {
           printf("Error al escribir %d en espacio de memoria compartida.\n",num);
           exit(EXIT_FAILURE);
         }
-        printf("%d\n", num);
         ptr += sizeof(int); 
         c += 1;
       }
 
-      sprintf(ptr2, "%d", c);
+      /* Escribir en espacio compartido de contador, controlando si hubo error */
+      if (sprintf(ptr2, "%d", c) == -1) {
+          printf("Error al escribir contador en espacio de memoria compartida.\n");
+          exit(EXIT_FAILURE);
+      }
     }
 
     /* Proceso padre debe esperar al segundo proceso hijo */
@@ -191,14 +197,17 @@ int main(int argc, char* argv[]) {
       wait(NULL);
       printf("Segundo proceso hijo completado.\n");
 
-      /* Leer desde espacio de memoria compartida */
+      /* Leer elementos de sucesion desde espacio de memoria compartida */
       shm_fd = shm_open(name, O_RDONLY, 0666);
       ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
+
+      /* Leer el contador desde espacio de memoria compartida */
       shm_fd2 = shm_open(name2, O_RDONLY, 0666);
       ptr2 = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd2, 0);
       char count[2];
       sprintf(count,"%s\n", (char*)ptr2);
 
+      /* Imprimir sucesion de numeros leidos */
       int i;
       for (i=0;i<atoi(count);i++){
         printf("%s\n", (char*)ptr);
