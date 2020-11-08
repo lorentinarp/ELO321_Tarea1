@@ -55,7 +55,6 @@ int main()
   for (i = 0 ; i < 3 ; i++ ){
     pthread_join(threadID[i], NULL);
   }
-  pthread_join(threadID[1], NULL);
   // Se imprimen los valores
   printf("Valor promedio = %f\n", avg_value);
   printf("Valor mínimo = %i\n", min_value);
