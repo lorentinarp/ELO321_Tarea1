@@ -35,27 +35,18 @@ int main()
     numArray[i] = rand() % 100;
   }
     
-  //Se crearan 3 hilos, uno para cada funcion
+  //ID de los hilos
   pthread_t threadID[3]; // ID de los hilos
-  pthread_attr_t attr[3];
 
-  // El primer hilo calcula el valor promedio
-  pthread_attr_init(&attr[0]);
-  pthread_create(&threadID[0], &attr[0], return_Avg, &avg_value);
-    
-  // El segundo hilo busca el valor minimo
-  pthread_attr_init(&attr[1]);
-  pthread_create(&threadID[1], &attr[1], return_Min, &min_value);
-
-  // El tercer hijo busca el valor maximo
-  pthread_attr_init(&attr[2]);
-  pthread_create(&threadID[2], &attr[1], return_Max, &max_value);
+  /* Se crean 3 hilos */
+  pthread_create(&threadID[0], NULL, return_Avg, &avg_value);
+  pthread_create(&threadID[1], NULL, return_Min, &min_value);
+  pthread_create(&threadID[2], NULL, return_Max, &max_value);
 
   // El proceso padre espera a todos los hilos
   for (i = 0 ; i < 3 ; i++ ){
     pthread_join(threadID[i], NULL);
   }
-  pthread_join(threadID[1], NULL);
   // Se imprimen los valores
   printf("Valor promedio = %f\n", avg_value);
   printf("Valor mínimo = %i\n", min_value);
@@ -80,6 +71,7 @@ void* return_Avg(void *arg){
   pthread_mutex_unlock(&lock); // Exit section
   // Remainder section
   printf("Thread ID: %lu calculó promedio\n",pthread_self());
+  pthread_exit(NULL);
 }
 
 void* return_Min(void *arg){
@@ -96,6 +88,7 @@ void* return_Min(void *arg){
   pthread_mutex_unlock(&lock); // Exit section
   // Remainder section
   printf("Thread ID: %lu calculó valor mínimo\n",pthread_self());
+  pthread_exit(NULL);
 }
 
 void* return_Max(void *arg){
@@ -112,5 +105,6 @@ void* return_Max(void *arg){
   pthread_mutex_unlock(&lock);  // Exit section
   // Remainder section
   printf("Thread ID: %lu calculó valor máximo\n",pthread_self());
+  pthread_exit(NULL);
 }
 
