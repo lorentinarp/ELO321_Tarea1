@@ -130,45 +130,45 @@ int main(int argc, char* argv[]) {
   else {
     wait(NULL);
     printf("Primer proceso hijo completado.\n");
-  }
 
-  /* Establecer espacio de memoria compartida */
-  const int SIZE = 4096;
-  const char* name = "mem";
-  int shm_fd;
-  void* ptr;
-  shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
-  ftruncate(shm_fd, SIZE);
-  ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    /* Establecer espacio de memoria compartida */
+    const int SIZE = 4096;
+    const char* name = "mem";
+    int shm_fd;
+    void* ptr;
+    shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
+    ftruncate(shm_fd, SIZE);
+    ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
-  /* Generar proceso hijo para escribir sucesion de Collatz en mem */
-  pid_t pid2;
-  pid2 = fork();
+    /* Generar proceso hijo para escribir sucesion de Collatz en mem */
+    pid_t pid2;
+    pid2 = fork();
+  
+    /* Controlar que se haya ejecutado fork correctamente */
+    if (pid2 < 0) {
+      printf("Error al crear segundo proceso hijo.\n");
+      exit(EXIT_FAILURE);
+    }
 
-  /* Controlar que se haya ejecutado fork correctamente */
-  if (pid2 < 0) {
-    printf("Error al crear segundo proceso hijo.\n");
-    exit(EXIT_FAILURE);
-  }
+    /* Calcular sucesion de Collatz a partir de num de parte de proceso hijo */
+    else if (pid2==0) {
+      while (num!=1){
+        num = sucesion_Collatz((unsigned int)num);
 
-  /* Calcular sucesion de Collatz a partir de num de parte de proceso hijo */
-  else if (pid2==0) {
-    while (num!=1){
-      num = sucesion_Collatz((unsigned int)num);
+        /* Escribir en espacio de memoria compartida */
+        sprintf(ptr, "%d", num);
+        ptr += 4; 
+      }
+    }
 
-      /* Escribir en espacio de memoria compartida */
-      sprintf(ptr, "%d", num);
-      ptr += 4; 
+    /* Proceso padre debe esperar al segundo proceso hijo */
+    else {
+      sleep(10);
+      wait(NULL);
+      printf("Segundo proceso hijo completado.\n");
     }
   }
-
-  /* Proceso padre debe esperar al segundo proceso hijo */
-  else {
-    sleep(10);
-    wait(NULL);
-    printf("Segundo proceso hijo completado.\n");
-  }
-
+  
   return 0;
 }
 
